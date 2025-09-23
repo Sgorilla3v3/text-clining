@@ -1,0 +1,13 @@
+pandas
+numpy
+PyYAML
+tqdm
+scikit-learn
+networkx
+matplotlib
+plotly
+# Optional Korean NLP (enable as needed)
+# kiwipiepy
+# konlpy
+# soynlp
+# bertopic
