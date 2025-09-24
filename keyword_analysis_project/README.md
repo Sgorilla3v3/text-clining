@@ -40,29 +40,120 @@ GitHub 리포지토리의 `README.md`에 그대로 **복사·붙여넣기** 할 
 - ✅ 실행(run) 단위별 재현 가능한 출력
 - ⏳ 업그레이드 예정: 한국어 형태소 분석기, TF-IDF, LDA/BERTopic, spaCy NER, ML 분류기, Plotly 대시보드
 
+
+
 ---
 
 ## 2) 폴더 구조
 
 ```markdown
-.github/workflows/ci.yml
-.gitignore
-LICENSE
-README.md
-configs/config.yaml
-data/raw/.gitkeep
-data/raw/filtered\_blog2.json
-dicts/layer\_rules.yml
-dicts/persona\_rules.yml
-dicts/program\_list.csv
-dicts/stopwords.txt
-dicts/synonyms.csv
-requirements.txt
-src/08\_dashboard.py
-src/utils/io.py
-src/utils/log.py
-src/utils/text.py
+keyword_analysis_project/
+├─ configs/
+│  └─ config.yaml              # 파이프라인 설정
+├─ data/
+│  ├─ raw/                     # 원본 데이터셋 스냅샷
+│  │  ├─ B
+log_raw_data
+│  │  │  └─ filtered_blog2.json
+│  │  └─ News_raw_data
+│  │     └─ filtered_blog2.json
+│  ├─ interim/                 # 중간 산출물 (run_id 단위)
+│  │  └─ {run_id}/
+│  │     ├─ cleaned.csv
+│  │     └─ tokens.csv
+│  └─ processed/               # 최종 가공 산출물 (run_id 단위)
+│     └─ {run_id}/
+│        ├─ keywords_top.csv
+│        ├─ ngrams_edges.csv
+│        ├─ topics.json
+│        ├─ entities.csv
+│        └─ layer_tags.csv
+├─ dicts/
+│  ├─ stopwords.txt
+│  ├─ synonyms.csv
+│  ├─ program_list.csv
+│  ├─ layer_rules.yml
+│  └─ persona_rules.yml
+├─ logs/
+│  └─ *.log
+├─ outputs/
+│  ├─ runs/
+│  │  └─ {run_id}/dashboard/
+│  │     └─ dash.html
+│  └─ latest_run.json          # 최근 실행 포인터
+src/
+├─ 01_load_clean.py
+├─ 02_tokenize.py              # 현재: 공백 기반 토큰화
+│   └─ 02_tokenize_korean.py   # planned: 형태소 분석기 기반
+├─ 03_keywords_tfidf.py        # 현재: 빈도 기반 placeholder
+│   └─ 03_keywords_tfidf_true.py   # planned: 실제 TF-IDF
+├─ 04_ngrams_cooc.py           # 의미단위 그룹화
+├─ 05_topics.py                # 현재: 초성 그룹 placeholder
+│   ├─ 05_topics_lda.py        # planned: LDA
+│   └─ 05_topics_bertopic.py   # planned: BERTopic
+├─ 06_ner.py                   # 현재: 룰 기반 프로그램명 추출
+│   └─ 06_ner_spacy_ko.py      # planned: spaCy KoELECTRA 기반
+├─ 07_classify.py              # 현재: 룰 기반 Layer 분류
+│   └─ 07_classify_ml.py       # planned: ML 기반 classifier
+├─ 08_dashboard.py             # 현재: 간단한 HTML 대시보드
+│   └─ 08_dashboard_plotly.py  # planned: Plotly 인터랙티브
+├─ utils/
+│   ├─ config.py
+│   ├─ io.py
+│   ├─ log.py
+│   └─ text.py
+├─ notebooks/
+│  └─ EDA.ipynb                 # (planned)
+├─ requirements.txt
+├─ run_pipeline.py
+└─ README.md
 ```
+```mermaid
+flowchart LR
+
+    A[run_pipeline.py] --> B[configs/config.yaml]
+    B --> C[src<br>01_load_clean.py]
+
+    subgraph src
+     
+      C --> D[src<br>02_tokenize.py<br>공백 기반 토큰화]
+      D --> E[src<br>03_keywords_tfidf.py<br>빈도 기반 placeholder]
+      E --> F[src<br>04_ngrams_cooc.py<br>의미단위 그룹화]
+      F --> G[src<br>05_topics.py<br>초성 그룹 placeholder]
+      G --> H[src<br>06_ner.py<br>룰 기반 프로그램명 추출]
+      H --> I[src<br>07_classify.py<br>룰 기반 Layer 분류]
+      I --> J[src<br>08_dashboard.py<br>간단한 HTML 대시보드]
+    end
+    subgraph utils
+        U1[src<br>utils<br>config.py]
+        U2[src<br>utils<br>io.py]
+        U3[src<br>utils<br>log.py]
+        U4[src<br>utils<br>text.py]
+    end
+
+    A --> U1
+    C --> U2
+    D --> U4
+    J --> U3
+```
+
+### 📂 파일별 역할 설명
+
+| **파일** | **기능 설명** |
+|----------|----------------|
+| run_pipeline.py | 파이프라인 전체 실행 시작점. `configs/config.yaml`을 읽어 dataset_id, run_id, 출력 경로 등을 설정하고, 단계별 스크립트(01~08)를 순차 실행하는 오케스트레이터 역할. |
+| src/01_load_clean.py | 원본 JSON 데이터를 불러와 클리닝(HTML 태그 제거, 특수문자/공백 정리 등) 후 `cleaned.csv`를 생성. |
+| src/02_tokenize.py | 현재 버전은 단순 공백 기반 토큰화. stopwords(`dicts/stopwords.txt`) 제거와 synonyms(`dicts/synonyms.csv`) 치환을 적용. 결과는 `tokens.csv`. |
+| src/03_keywords_tfidf.py | 현재는 빈도 기반 placeholder로 키워드 상위 n개를 산출. 결과는 `keywords_top.csv`. 향후 TF-IDF 기반으로 확장 예정. |
+| src/04_ngrams_cooc.py | 토큰 리스트에서 n-gram과 공동출현(co-occurrence) 관계를 계산. 결과는 `ngrams_edges.csv` (네트워크 분석용 엣지 리스트). |
+| src/05_topics.py | 현재는 단순 placeholder (예: 초성 그룹화). 결과는 `topics.json`. 향후 LDA/BERTopic으로 교체 예정. |
+| src/06_ner.py | 룰 기반 NER(개체명인식, Named Entity Recognition). `dicts/program_list.csv`에 정의된 프로그램명을 텍스트에서 추출하여 `entities.csv` 생성. |
+| src/07_classify.py | 페르소나 룰 기반 문서 분류. `dicts/layer_rules.yml`, `dicts/persona_rules.yml` 규칙을 이용해 `layer_tags.csv` 생성. |
+| src/08_dashboard.py | 분석 결과를 간단한 정적 HTML 대시보드(`dash.html`)로 출력. 향후 Plotly 기반 인터랙티브 버전으로 확장 예정. |
+| src/utils/config.py | `configs/config.yaml`을 불러와 dataset_id, run_id, 경로 등을 관리하는 설정 유틸리티. |
+| src/utils/io.py | CSV/JSON 입출력 담당. interim/processed 디렉토리에 데이터를 저장하고 불러오는 기능. |
+| src/utils/log.py | 실행 로그 관리. `logs/*.log` 파일로 기록해 디버깅 및 추적 지원. |
+| src/utils/text.py | 텍스트 처리 유틸리티. 정규표현식 기반 클리닝, 문자열 정규화, 토큰 후처리 등을 제공. |
 
 
 ---
