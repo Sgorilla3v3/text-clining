@@ -42,11 +42,7 @@ keyword_analysis_project/
 │  └─ config.yaml              # 파이프라인 설정
 ├─ data/
 │  ├─ raw/                     # 원본 데이터셋 스냅샷
-│  │  ├─ B
-log_raw_data
-│  │  │  └─ filtered_blog2.json
-│  │  └─ News_raw_data
-│  │     └─ filtered_blog2.json
+│  │  └─ filtered_blog2.json
 │  ├─ interim/                 # 중간 산출물 (run_id 단위)
 │  │  └─ {run_id}/
 │  │     ├─ cleaned.csv
