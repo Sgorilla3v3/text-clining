@@ -5,7 +5,7 @@ GitHub 리포지토리의 `README.md`에 그대로 **복사·붙여넣기** 할 
 
 ```markdown
 # 키워드 분석 프로젝트
-[![CI](https://github.com/<USER>/<REPO>/actions/workflows/ci.yml/badge.svg)](https://github.com/<USER>/<REPO>/actions)
+[![CI](https://github.com/Sgorilla3v3/text-clining/actions/workflows/ci.yml/badge.svg)](https://github.com/Sgorilla3v3/text-clining/actions)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)
 
