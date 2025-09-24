@@ -236,7 +236,83 @@ configs/config.yaml
 
 MIT (상세 내용은 `LICENSE` 파일 참고)
 
+
+---
+
+# TODO 리스트: feat/tfidf-keywords
+
+## 1. 브랜치 생성
+
+```bash
+git checkout -b feat/tfidf-keywords
 ```
+
+## 2. 코드 변경 대상
+
+### src/03\_keywords\_tfidf.py
+
+* [ ] 기존 placeholder(단순 빈도 기반) 코드를 scikit-learn `TfidfVectorizer` 기반으로 교체
+* [ ] 입력: `tokens.csv`
+* [ ] 처리: 문서별 TF-IDF 매트릭스 계산 → 상위 n개 키워드 추출
+* [ ] 출력: `keywords_top.csv` (`term, score, doc_id`)
+
+## 3. utils 확장
+
+### src/utils/text.py
+
+* [ ] 선택적으로 `normalize_tokens()` 함수 보강: 불용어 제거 및 동의어 치환 후 TF-IDF 적용 가능하도록 전처리 강화
+
+## 4. 설정 확장
+
+### configs/config.yaml
+
+* [ ] keywords 섹션 추가
+
+```yaml
+keywords:
+  top_n: 20
+  min_df: 2
+  max_df: 0.8
+```
+
+* [ ] min\_df, max\_df 값을 적용해 희귀 단어나 너무 흔한 단어를 필터링
+
+## 5. 출력 검증
+
+* [ ] 결과물(`data/processed/{run_id}/keywords_top.csv`) 확인
+
+  * 컬럼: `doc_id, keyword, tfidf_score`
+* [ ] README에 샘플 출력 예시 추가
+
+## 6. 로그 보강
+
+### src/utils/log.py
+
+* [ ] TF-IDF 매트릭스 크기와 top\_n 키워드 정보를 로그로 출력
+* 로그 예시
+
+```
+[INFO] TF-IDF matrix shape: (120 docs, 5400 terms)
+[INFO] Top 20 keywords per doc written to processed/...
+```
+
+## 7. 테스트 및 푸시
+
+```bash
+python run_pipeline.py --dataset_id News_raw_data
+git add .
+git commit -m "feat: implement TF-IDF keyword extraction"
+git push -u origin feat/tfidf-keywords
+```
+
+## 요약
+
+* 핵심 구현: `03_keywords_tfidf.py`를 TF-IDF 기반으로 교체
+* 보조 수정: `text.py`, `config.yaml`, `log.py` 확장
+* 산출물: `keywords_top.csv` → TF-IDF 상위 키워드
+* Copilot 활용 포인트: TODO 주석, 함수 시그니처 힌트, 설정값 예시
+
+
 
 
 
