@@ -1,16 +1,6 @@
-좋습니다 🙆
-GitHub 리포지토리의 `README.md`에 그대로 **복사·붙여넣기** 할 수 있는 고도화된 한국어 버전을 만들어드렸습니다.
 
----
-
-```markdown
 # 키워드 분석 프로젝트
-[![CI](https://github.com/Sgorilla3v3/text-clining/actions/workflows/ci.yml/badge.svg)](https://github.com/Sgorilla3v3/text-clining/actions)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)
-
 > 텍스트 데이터셋을 실행(run) 단위로 관리하고, 키워드·토픽·엔터티를 분석해 HTML 대시보드로 출력하는 파이프라인
-```
 ---
 
 ## 📌 목차
@@ -35,10 +25,10 @@ GitHub 리포지토리의 `README.md`에 그대로 **복사·붙여넣기** 할 
 ---
 
 ## 1) 주요 기능
-- ✅ Dataset / 버전 관리 (`latest` 또는 `--dataset_id` 지정 가능)
-- ✅ 8단계 파이프라인 (로드 → 토큰화 → 키워드 → 공동출현 → 토픽 → NER → 분류 → 대시보드)
-- ✅ 실행(run) 단위별 재현 가능한 출력
-- ⏳ 업그레이드 예정: 한국어 형태소 분석기, TF-IDF, LDA/BERTopic, spaCy NER, ML 분류기, Plotly 대시보드
+-  Dataset / 버전 관리 (`latest` 또는 `--dataset_id` 지정 가능)
+-  8단계 파이프라인 (로드 → 토큰화 → 키워드 → 공동출현 → 토픽 → NER → 분류 → 대시보드)
+-  실행(run) 단위별 재현 가능한 출력
+-  업그레이드 예정: 한국어 형태소 분석기, TF-IDF, LDA/BERTopic, spaCy NER, ML 분류기, Plotly 대시보드
 
 
 
